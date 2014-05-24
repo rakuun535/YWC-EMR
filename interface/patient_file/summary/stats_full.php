@@ -127,7 +127,7 @@ foreach ($ISSUE_TYPES as $focustype => $focustitles) {
   echo " <table style='margin-bottom:1em;text-align:center'>";
   ?>
   <tr class='head'>
-    <th><?php echo htmlspecialchars( xl('Title'), ENT_NOQUOTES); ?></th>
+    <th><?php echo htmlspecialchars( xl('Claim Number'), ENT_NOQUOTES); // LHR changed Title to Claim Number?></th>
     <th><?php echo htmlspecialchars( xl('Begin'), ENT_NOQUOTES); ?></th>
     <th><?php echo htmlspecialchars( xl('End'), ENT_NOQUOTES); ?></th>
     <th><?php echo htmlspecialchars( xl('Diag'), ENT_NOQUOTES); ?></th>

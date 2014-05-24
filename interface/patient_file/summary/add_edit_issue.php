@@ -500,7 +500,7 @@ function divclick(cb, divid) {
  </tr>
 
  <tr>
-  <td valign='top' id='title_diagnosis' nowrap><b><?php echo $GLOBALS['athletic_team'] ? xlt('Text Diagnosis') : xlt('Title'); ?>:</b></td>
+  <td valign='top' id='title_diagnosis' nowrap><b><?php echo $GLOBALS['athletic_team'] ? xlt('Text Diagnosis') : xlt('Claim Number'); // LHR changed Title to Claim Number?>:</b></td>
   <td>
    <input type='text' size='40' name='form_title' value='<?php echo attr($irow['title']) ?>' style='width:100%' />
   </td>

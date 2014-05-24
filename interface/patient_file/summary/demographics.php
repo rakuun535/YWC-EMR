@@ -555,6 +555,20 @@ if ($GLOBALS['patient_id_category_name']) {
 |
 <a href="stats_full.php?active=all" onclick='top.restoreSession()'>
 <?php echo htmlspecialchars(xl('Issues'),ENT_NOQUOTES); ?></a>
+
+|
+<?php //below link and code by LHR
+
+$LHRres = sqlStatement("SELECT * FROM insurance_data WHERE pid = $pid and type = 'primary'");
+  while($LHRrow = sqlFetchArray($LHRres)){
+						$policy_num = $LHRrow['policy_number'];
+						}
+ echo "<a href=\"labels.php?pid=".urlencode($result['pubpid'])."&DOB=".urlencode($result['DOB']."&fname=").urlencode($result['fname'])."&lname=".urlencode($result['lname'])."&DOB=".urlencode($result['DOB'])."&phone_home=".urlencode($result['phone_home'])."&ss=".urlencode($result['ss'])."&street=".urlencode($result['street'])."&city=".urlencode($result['city'])."&state=".urlencode($result['state'])."&postal_code=".urlencode($result['postal_code'])."&fs_provider=".urlencode($result['fs_provider'])."&effdate=".urlencode($result3['effdate'])."&fs_allergies=".urlencode($result['fs_allergies'])."&fs_meds=".urlencode($result['fs_meds'])."&policy_number=".urlencode($policy_num)."&sex=".urlencode($result['sex'])."&employer_name=".urlencode($result2['name'])."&employer_phone=".urlencode($result['emplo_phone'])."&employer_fax=".urlencode($result['emplo_fax'])."\" target=\"_blank\" >Labels</a>";  // LHR added this?>
+<?php //echo "<a href=\"fee_sheet.php?pid=".$row['id']."\" target=\"_blank\" >Fee Sheet</a>"; // LHR added this?>
+
+|
+<?php /*echo "<a href=\"fee_sheet.php?pid=".$result['pubpid']."&DOB=".$result['DOB']."&fname=".$result['fname']."&lname=".$result['lname']."&DOB=".$result['DOB']."&phone_home=".$result['phone_home']."&ss=".$result['ss']."&street=".$result['street']."&city=".$result['city']."&state=".$result['state']."&postal_code=".$result['postal_code']."&fs_provider=".$result['fs_provider']."&fs_allergies=".$result['fs_allergies']."&fs_meds=".$result['fs_meds']."&sex=".$result['sex']."\" target=\"_blank\" >Fee Sheet</a>"; */ // LHR added this?>
+<?php //echo "<a href=\"fee_sheet.php?pid=".$row['id']."\" target=\"_blank\" >Fee Sheet</a>"; // LHR added this?>
   </td>
  </tr>
 </table> <!-- end header -->
@@ -767,12 +781,12 @@ if ( $insurance_count > 0 ) {
 								  }
 								  ?>
 								  <br>
-								  <?php echo htmlspecialchars(xl('Policy Number'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['policy_number'],ENT_NOQUOTES) ?><br>
-								  <?php echo htmlspecialchars(xl('Plan Name'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['plan_name'],ENT_NOQUOTES); ?><br>
-								  <?php echo htmlspecialchars(xl('Group Number'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['group_number'],ENT_NOQUOTES); ?></span>
+								  <?php echo htmlspecialchars(xl('Policy Number Here'),ENT_NOQUOTES); ?>: 
+								  <?php echo htmlspecialchars($row['policy_number'],ENT_NOQUOTES); ?><br>
+								  <?php // LHR echo htmlspecialchars(xl('Plan Name'),ENT_NOQUOTES); ?><!-- : --> 
+								  <?php // LHR echo htmlspecialchars($row['plan_name'],ENT_NOQUOTES); ?><!--<br>-->
+								  <?php // LHR echo htmlspecialchars(xl('Group Number'),ENT_NOQUOTES); ?><!--: -->
+								  <?php // LHR echo htmlspecialchars($row['group_number'],ENT_NOQUOTES); ?></span>
 								 </td>
 								 <td valign='top'>
 								  <span class='bold'><?php echo htmlspecialchars(xl('Subscriber'),ENT_NOQUOTES); ?>: </span><br>

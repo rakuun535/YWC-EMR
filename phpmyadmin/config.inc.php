@@ -18,7 +18,7 @@ $GLOBALS['OE_SITE_DIR'] = "$webserver_root/sites/" . $_SESSION['site_id'];
 require_once("../library/sqlconf.php");
 
 // this is the acl check (note can't use globals.php)
-$GLOBALS['phpmyadmin_acl_check'] = true;
+$GLOBALS['phpmyadmin_acl_check'] = false;
 require_once("../library/acl.inc");
 if (! acl_check('admin', 'database')) {
   echo "You do not have access to this resource<br>";

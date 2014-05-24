@@ -100,7 +100,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
    if (trim($claim->x12gsreceiverid()) == '470819582') { // if ECLAIMS EDI
     $out  .=  "*" . $claim->clearingHouseETIN();
    } else {
-    $out  .=  "*" . $claim->billingFacilityETIN();
+	//$out  .=  "*" . $claim->billingFacilityETIN(); Commented out By LHR 4-1-2013
+    $out  .=  "*" . $claim->x12gsper06(); 
    }
     $out .= "~\n";
 
@@ -771,7 +772,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
 
   // Segments NM1*PW, N3, N4 (Ambulance Pick-Up Location) omitted.
   // Segments NM1*45, N3, N4 (Ambulance Drop-Off Location) omitted.
-
+/* commenting out the two loops below cuz we are not an NPI company LHR
   $prev_pt_resp = $clm_total_charges; // for computation below
 
   // Loops 2320 and 2330*, other subscriber/payer information.
@@ -950,6 +951,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     // Segment REF (Other Payer Billing Provider Secondary Identification) omitted.
 
   } // End loops 2320/2330*.
+LHR Commented the two loops above out cuz we are not an NPI company
+*/
 
   $loopcount = 0;
 
