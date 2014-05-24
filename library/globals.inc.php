@@ -417,7 +417,14 @@ $GLOBALS_METADATA = array(
       '$',                              // default
       xl('Code or symbol to indicate currency')
     ),
-
+    'age_display_format'=>array(xl('Age Display Format'),
+        array(
+            '0'=>xl('Years or months'),
+            '1'=>xl('Years, months and days')
+            ),
+            '0',
+            xl('Format for age display')
+    )
   ),
 
   // Features Tab
@@ -1340,6 +1347,13 @@ $GLOBALS_METADATA = array(
       '0',
       xl('Enable Offsite Patient Portal.')
     ),
+
+    'portal_offsite_providerid' => array(
+      xl('Offsite Patient Portal Provider ID'),
+      'text',                           // data type
+      '',
+      xl('Offsite Patient Portal Provider ID(Put Blank If not Registered).')
+    ),    
 
     'portal_offsite_username' => array(
       xl('Offsite Patient Portal Username'),

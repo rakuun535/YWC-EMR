@@ -1,29 +1,28 @@
 <?php
-// +-----------------------------------------------------------------------------+ 
-// Copyright (C) 2011 Z&H Consultancy Services Private Limited <sam@zhservices.com>
-//
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-//
-// A copy of the GNU General Public License is included along with this program:
-// openemr/interface/login/GnuGPL.html
-// For more information write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// 
-// Author:   Eldho Chacko <eldho@zhservices.com>
-//           Jacob T Paul <jacob@zhservices.com>
-//
-// +------------------------------------------------------------------------------+
+/**
+ * soap_service/server_newpatienttoapprove.php Server side code to unapproved patients.
+ *
+ * Functions to handle unapproved patients.
+ *
+ * Copyright (C) 2013 Z&H Consultancy Services Private Limited <sam@zhservices.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-license.php>;.
+ *
+ * @package OpenEMR
+ * @author  Eldho Chacko <eldho@zhservices.com>
+ * @author  Jacob T Paul <jacob@zhservices.com>
+ * @author  Ajil P M <ajilpm@zhservices.com>
+ * @link    http://www.open-emr.org
+ */
 
 //SANITIZE ALL ESCAPES
 $sanitize_all_escapes=true;
@@ -33,14 +32,16 @@ $sanitize_all_escapes=true;
 $fake_register_globals=false;
 //
 
-class existingpatient {
+include_once('../../library/formdata.inc.php');
+
+class newpatienttoapprove {
     
 
 //this will return the query string along with the parameter array, according to the case case.
 //actual execution is done in the select_query function in Server_side
 
   public function query_formation($data){
-        global $pid;
+        global $pid,$auditmasterid;
         switch($data[0]){
             case 'A1':
             //Select list of encounters for the patients 
@@ -96,13 +97,14 @@ class existingpatient {
             break;
             
             case 'A4':
+						//Select encounter of the patient
             $query="select * from form_encounter where pid=? limit 1 ";
             return array($query,array($pid));
             break;
             
             case 'A5':
-            include_once('../../library/formdata.inc.php');
-            $enc_set_array=array();
+            //Select encounters of the patient
+						$enc_set_array=array();
             $enc_set_array[]=$pid;
             if($data[1][1]=='' && $data[1][2]>0)
             {
@@ -120,6 +122,7 @@ class existingpatient {
             break;
             
             case 'A6':
+						//Select encounter and copay of the patient
             $enc_set_array=array();
             $enc_set_array[]=$pid;
             if($data[1][0]=='' && $data[1][1]>0)
@@ -160,19 +163,23 @@ class existingpatient {
             return array($query,$enc_set_array);
             break;
             case 'A9':
+						//Payment
                 $query = "SELECT sum(pay_total)  as pay_total FROM ar_session WHERE patient_id=? AND adjustment_code=?";
                 return array($query,array($pid,'pre_payment'));
             break;
             case 'A10':
+						//Payment
                 $query = "SELECT sum(pay_amount)  as pay_amount FROM ar_session,ar_activity WHERE patient_id=? AND adjustment_code=?
                           AND pid=? AND ar_session.session_id=ar_activity.session_id  and pay_amount>0";
                 return array($query,array($pid,'pre_payment',$pid));
             break;
             case 'A11':
+						//Payment
                 $query = "SELECT sum(pay_total)  as pay_total FROM ar_session WHERE patient_id=? AND adjustment_code!=?";
                 return array($query,array($pid,'pre_payment'));
             break;
             case 'A12':
+						//Payment
                 $query = "SELECT sum(pay_amount)  as pay_amount FROM ar_session,ar_activity WHERE patient_id=? AND adjustment_code!=?
                           AND pid=? AND ar_session.session_id=ar_activity.session_id  and pay_amount>0";
                 return array($query,array($pid,'pre_payment',$pid));
@@ -180,55 +187,69 @@ class existingpatient {
             
 	    // Entries pending  for approval for Existing Patient and New Patient.
             case 'U4':
-            $query=  "select * from  audit_master  where pid=? and  approval_status='1' and  (type='1' or type='2')";
-            return array($query,array($pid));
+            $query=  "select * from audit_master where id=? and approval_status='1' and (type='1' or type='2')";
+            return array($query,array($auditmasterid));
             break;
             // Entries pending  for approval for  documents only (no demo change).            
             case 'U5':
-            $query = " select * from  audit_master  where pid=? and  approval_status='1' and  type='3' ";
+            $query = " select * from audit_master where pid=? and approval_status='1' and  type='3' ";
             return array($query,$data[1]);
             break;
             
             case 'P1':
-            $query= "select MAX(pid)+1 AS pid  from patient_data ";
-            
+						//Pid
+            $query= "select '0' AS pid";
             return array($query);
             break;
             
             //for building patient Demo
             case 'P2':
             $query="select * from  layout_options " .
-                "WHERE form_id = 'DEM' AND uor > 0 AND field_id != '' " .
-                      "ORDER BY group_name, seq";
+              "WHERE form_id = 'DEM' AND uor > 0 AND field_id != '' " .
+              "ORDER BY group_name, seq";
             return array($query);
             break;
             
             //for building patient Demo   Date of Birth
             case 'P3':
-            $query="select  *, DATE_FORMAT(DOB,'%Y-%m-%d') as DOB_YMD from patient_data where pid=? order by date DESC limit 0,1 ";
-            return array($query,array($pid));
+						$query="SELECT * FROM audit_details WHERE audit_master_id = ? AND table_name = 'patient_data'";
+						$query_res = sqlStatement($query,array($auditmasterid));
+						while($result = sqlFetchArray($query_res)){
+						  if($result['field_name'] == 'DOB'){
+								$dob_res = sqlQuery("SELECT DATE_FORMAT(?,'%Y-%m-%d') as DOB_YMD",array($result['field_value']));
+								$res['DOB_YMD'] = $dob_res['DOB_YMD'];
+							}
+						  $res[$result['field_name']] = $result['field_value'];
+						}
+            return array($res,'result');
             break;
             
            //for building patient Demo   Employer Data
             case 'P4':
-            $query="select  * from employer_data where pid=? order by date DESC limit 0,1 ";
-            return array($query,array($pid));
+						$query="SELECT * FROM audit_details WHERE audit_master_id = ? AND table_name = 'employer_data'";
+						$query_res = sqlStatement($query,array($auditmasterid));
+						while($result = sqlFetchArray($query_res)){
+						  $res[$result['field_name']] = $result['field_value'];
+						}
+            return array($res,'result');
             break;
             
             //for building patient Demo   Insurance company details for Patient 
             case 'P5':
-            $query=" select insd.*, ic.name as provider_name from insurance_data as insd " .
-                "left join insurance_companies as ic on ic.id = insd.provider " .
-                "where pid = ? and type =? order by date DESC limit 1 ";
-            array_unshift($data[1],$pid);
-            return array($query,$data[1]);
+						$query="SELECT * FROM audit_details WHERE audit_master_id = ? AND table_name = 'insurance_data' AND entry_identification = ?";
+						array_unshift($data[1],$auditmasterid);
+						$query_res = sqlStatement($query,$data[1]);
+						while($result = sqlFetchArray($query_res)){
+						  $res[$result['field_name']] = $result['field_value'];
+						}
+            return array($res,'result');
             break;
         
 			// Entries pending  for approval demo and documents.
             case 'P6':
-            $query=" select * from audit_master as am,audit_details as ad WHERE am.id=ad.audit_master_id and am.pid=? and am.approval_status='1'  
-                            and  (am.type='1' or am.type='2' or am.type='3')  order by ad.id";
-            return array($query,array($pid));
+            $query=" select * from audit_master as am,audit_details as ad WHERE am.id=ad.audit_master_id and ad.audit_master_id=? and am.approval_status='1'  
+              and  (am.type='1' or am.type='2' or am.type='3') order by ad.id";
+            return array($query,array($auditmasterid));
             break;
             // Demo building from layout options.
             
@@ -295,17 +316,17 @@ class existingpatient {
             $query = "select last_level_closed from form_encounter where encounter= ? and pid =? ";
             return array($query,$data[1]);
             break;
-        
+						//Insurance types
             case 'P17':	
             $query = "select COUNT( DISTINCT TYPE ) NumberOfInsurance from insurance_data where pid =? and provider>0 ";
             return array($query,array($pid));
             break;
-        
+						//Encounter date
             case 'P19':	
             $query = "select  date,encounter from form_encounter where pid =? ORDER BY encounter";
             return array($query,array($pid));
             break;
-        
+						//Duplicate existance
             case 'P20':	
             if($pid) 
              {
@@ -387,7 +408,6 @@ class existingpatient {
             
             case 'B8':
             //List of Service Facility
-            include_once('../../library/formdata.inc.php');
             $query="select * from facility where service_location != 0 and id in (".add_escape_custom($data[1][0]).") order by name";
             return array($query);
             break;
@@ -461,24 +481,6 @@ class existingpatient {
                             array_unshift($data[1],$pid);
                             return array($query,$data[1]);
                             break;
-												
-						case 'D5':
-                    $query = "SELECT po.procedure_order_id, po.date_ordered,po.procedure_type_id AS order_type_id, pt1.name AS procedure_name,
-									  ptrc.name AS result_category_name, pt2.procedure_type AS result_type, pt2.procedure_type_id AS result_type_id, pt2.name
-										AS result_name, pt2.units AS result_def_units, pt2.range AS result_def_range, pt2.description AS result_description,
-										lo.title AS units_name, pr.procedure_report_id, pr.date_report, pr.date_collected, pr.specimen_num, pr.report_status,
-										pr.review_status, ps.procedure_result_id, ps.abnormal, ps.result, ps.range, ps.result_status, ps.facility, ps.comments
-										FROM procedure_order AS po LEFT JOIN procedure_type AS pt1 ON pt1.procedure_type_id = po.procedure_type_id LEFT JOIN
-										procedure_type AS ptrc ON ptrc.procedure_type_id = pt1.parent AND ptrc.procedure_type LIKE 'grp%' LEFT JOIN procedure_type
-										AS pt2 ON ((ptrc.procedure_type_id IS NULL AND (pt2.parent = po.procedure_type_id OR pt2.procedure_type_id = po.procedure_type_id))
-										OR (pt2.procedure_type_id IS NOT NULL AND pt2.parent = pt1.procedure_type_id)) AND (pt2.procedure_type LIKE 'res%' OR
-										pt2.procedure_type LIKE 'rec%') LEFT JOIN list_options AS lo ON list_id = 'proc_unit' AND option_id = pt2.units LEFT JOIN
-										procedure_report AS pr ON pr.procedure_order_id = po.procedure_order_id LEFT JOIN procedure_result AS ps ON
-										ps.procedure_report_id = pr.procedure_report_id AND ps.procedure_type_id = pt2.procedure_type_id WHERE po.patient_id = ? 
-										ORDER BY po.date_ordered, po.procedure_order_id, pr.procedure_report_id, ptrc.seq, ptrc.name, ptrc.procedure_type_id,
-									  pt2.seq, pt2.name, pt2.procedure_type_id";
-                            return array($query,array($pid));
-                            break;
             
             //G series for form menu inc
             case 'G1':
@@ -488,17 +490,29 @@ class existingpatient {
                         
             case 'G2':
                     $query = "SELECT * FROM documents_legal_master AS dlm WHERE dlm_subcategory <> ? and dlm_effective_date <= now() AND
-                    dlm_effective_date<>? AND dlm_upload_type = '0' AND dlm_document_id Not IN (SELECT distinct(dld_master_docid) FROM documents_legal_detail WHERE
-                    dld_id IS NOT NULL AND dld_pid=?)";
-                            array_push($data[1],$pid);
+                    dlm_effective_date<>? AND dlm_upload_type = '0' AND dlm_document_id NOT IN (SELECT DISTINCT (ad2.field_value) FROM
+										audit_details ad JOIN audit_details ad1 ON ad1.table_name = 'patient_access_offsite' AND ad1.field_name = 'portal_pwd' 
+										AND ad1.audit_master_id = ad.audit_master_id JOIN audit_details ad2 ON ad2.table_name = 'documents_legal_detail' AND
+										ad2.field_name = 'dld_master_docid' JOIN audit_details ad3 ON ad3.table_name = 'patient_access_offsite' AND
+										ad3.field_name = 'portal_username' AND ad3.audit_master_id = ad2.audit_master_id WHERE ad.audit_master_id = ? AND
+										ad.table_name = 'patient_access_offsite' AND ad.field_name = 'portal_username' AND ad3.field_value = ad.field_value)";
+                            array_push($data[1],$auditmasterid);
                             return array($query,$data[1]);
                             break;
                         
             case 'G3':
-                    $query = "SELECT * FROM documents_legal_master AS dlm LEFT OUTER JOIN documents_legal_detail as dld ON
-                    dlm_document_id=dld_master_docid WHERE dlm_subcategory <> ? and dlm_effective_date <= now() AND dlm_effective_date<>?
-                    AND dld_id IS NOT NULL AND dld_signed=? AND dld_pid=? ORDER BY dlm_effective_date DESC";
-                            array_push($data[1],$pid);
+                    $query = "SELECT *, ad5.field_value AS dld_filename FROM documents_legal_master AS dlm JOIN audit_details ad ON
+										ad.table_name = 'patient_access_offsite' AND ad.field_name = 'portal_username' JOIN audit_details ad1 ON
+										ad1.table_name = 'patient_access_offsite' AND ad1.field_name = 'portal_pwd' AND ad1.audit_master_id = ad.audit_master_id
+										JOIN audit_details ad2 ON ad2.table_name = 'patient_access_offsite' AND ad2.field_name = 'portal_username' AND
+										ad2.field_value = ad.field_value JOIN audit_details ad3 ON ad3.table_name = 'documents_legal_detail' AND
+										ad3.field_name = 'dld_master_docid' AND ad3.field_value = dlm.dlm_document_id AND ad3.audit_master_id = ad2.audit_master_id
+										JOIN audit_details ad4 ON ad4.table_name = 'documents_legal_detail' AND ad4.field_name = 'dld_signed' AND
+										ad4.audit_master_id = ad3.audit_master_id JOIN audit_details ad5 ON ad5.table_name = 'documents_legal_detail'
+										AND	ad5.field_name = 'dld_filename' AND ad5.audit_master_id = ad3.audit_master_id WHERE dlm_subcategory <> ?
+										AND dlm_effective_date <= NOW() AND dlm_effective_date <> ? AND ad4.field_value = ? AND	ad.audit_master_id = ?
+										GROUP BY dlm.dlm_document_id ORDER BY dlm_effective_date DESC";
+                            array_push($data[1],$auditmasterid);
                             return array($query,$data[1]);
                             break;
                         
@@ -529,8 +543,12 @@ class existingpatient {
                         
             case 'F1':
             //Patient details .
-            $query="select * from patient_data where pid=?";
-            return array($query,array($pid));
+						$query="SELECT * FROM audit_details WHERE audit_master_id = ? AND table_name = 'patient_data'";
+						$query_res = sqlStatement($query,array($auditmasterid));
+						while($result = sqlFetchArray($query_res)){
+						  $res[$result['field_name']] = $result['field_value'];
+						}
+            return array($res,'result');
             break;
             
             case 'F2':
@@ -554,8 +572,8 @@ class existingpatient {
             
             case 'F8':
             // Entries to be approved demo  for new patient, existing patient and only documents
-            $query="select * from audit_master  where pid=? and  approval_status='1'  and  (type='1' or type='2' or type='3')";
-            return array($query,array($pid));
+            $query="select * from audit_master where id=? and approval_status='1' and (type='1' or type='2' or type='3')";
+            return array($query,array($auditmasterid));
             break;
             
             case 'F9':
@@ -579,8 +597,9 @@ class existingpatient {
             break;
                     
             case 'J1':
-            $query = "SELECT fname FROM patient_data WHERE pid=?";
-            return array($query,array($pid));
+						//First name of patient
+            $query = "SELECT field_value as fname FROM audit_details WHERE audit_master_id=? AND table_name='patient_data' AND field_name = 'fname'";
+            return array($query,array($auditmasterid));
             break;
             //Checking whether a new patient entry is pending in the audit master
             case 'J2':
