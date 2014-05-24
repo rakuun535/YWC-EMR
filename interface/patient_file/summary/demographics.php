@@ -555,6 +555,10 @@ if ($GLOBALS['patient_id_category_name']) {
 |
 <a href="stats_full.php?active=all" onclick='top.restoreSession()'>
 <?php echo htmlspecialchars(xl('Issues'),ENT_NOQUOTES); ?></a>
+
+|
+<?php echo "<a href=\"fee_sheet.php?pid=".$result['pubpid']."&DOB=".$result['DOB']."&fname=".$result['fname']."&lname=".$result['lname']."&DOB=".$result['DOB']."&phone_home=".$result['phone_home']."&ss=".$result['ss']."&street=".$result['street']."&city=".$result['city']."&state=".$result['state']."&postal_code=".$result['postal_code']."&fs_provider=".$result['fs_provider']."&fs_allergies=".$result['fs_allergies']."&fs_meds=".$result['fs_meds']."&sex=".$result['sex']."\" target=\"_blank\" >Fee Sheet</a>"; // LHR added this?>
+<?php //echo "<a href=\"fee_sheet.php?pid=".$row['id']."\" target=\"_blank\" >Fee Sheet</a>"; // LHR added this?>
   </td>
  </tr>
 </table> <!-- end header -->
