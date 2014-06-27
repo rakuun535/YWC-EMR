@@ -747,6 +747,20 @@ class Claim {
     return x12clean(trim(str_replace('-', '', $tmp['provider_number'])));
   }
 
+//created the next two functions for our billing procedures LHR
+function renderingproviderNumber($prockey=-1) {
+    $tmp = ($prockey < 0 || empty($this->procs[$prockey]['provider_id'])) ?
+      $this->insurance_numbers : $this->procs[$prockey]['insurance_numbers'];
+    return x12clean(trim(str_replace('-', '', $tmp['rendering_provider_number'])));
+  }
+
+function renderingproviderNumberType($prockey=-1) {
+    $tmp = ($prockey < 0 || empty($this->procs[$prockey]['provider_id'])) ?
+      $this->insurance_numbers : $this->procs[$prockey]['insurance_numbers'];
+    return $tmp['rendering_provider_number_type'];
+  }
+
+
   function providerGroupNumber($prockey=-1) {
     $tmp = ($prockey < 0 || empty($this->procs[$prockey]['provider_id'])) ?
       $this->insurance_numbers : $this->procs[$prockey]['insurance_numbers'];
@@ -870,6 +884,19 @@ class Claim {
   function insuredDOB($ins=0) {
     return str_replace('-', '', $this->payers[$ins]['data']['subscriber_DOB']);
   }
+
+		//created this function below so as to provide SS number for X12 LHR
+  function insuredSS($ins=0) {
+    return str_replace('-', '', $this->payers[$ins]['data']['subscriber_ss']);
+  }    
+  
+
+       //created this function below so as to provide Date of Injury from effective date for X12 LHR
+  function insuredDOI($ins=0) {
+    return str_replace('-', '', $this->payers[$ins]['data']['date']);
+  }    
+	
+
 
   function insuredSex($ins=0) {
     return strtoupper(substr($this->payers[$ins]['data']['subscriber_sex'], 0, 1));

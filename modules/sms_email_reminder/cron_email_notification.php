@@ -1,5 +1,4 @@
-<?php
-
+<?
 ////////////////////////////////////////////////////////////////////
 // Package:	cron_email_notification
 // Purpose:	to be run by cron every hour, look for appointments
@@ -12,12 +11,13 @@
 // larry :: hack add for command line version
 $_SERVER['REQUEST_URI']=$_SERVER['PHP_SELF'];
 $_SERVER['SERVER_NAME']='localhost';
+$_SERVER['HTTP_HOST']='default';
 $backpic = "";
 
-// email notification
+// email notification below modified by LHR include_once("../../interface/globals.php"); include_once("cron_functions.php");
 $ignoreAuth=1;
-include_once("../../interface/globals.php");
-include_once("cron_functions.php");
+include_once("/var/www/openemr/interface/globals.php");
+include_once("/var/www/openemr/modules/sms_email_reminder/cron_functions.php");
 
 $TYPE = "Email";
 $CRON_TIME = 5;

@@ -1,9 +1,8 @@
-<?php 
+<?php
 ////////////////////////////////////////////////////////////////////
 // CRON FUNCTIONS - to use with cron_sms and cron_email backend
 // scripts to notify events
 ////////////////////////////////////////////////////////////////////
-
 // larry :: somne global to be defined here
 global $smsgateway_info;
 global $patient_info;
@@ -11,6 +10,15 @@ global $data_info;
 
 global $SMS_NOTIFICATION_HOUR;
 global $EMAIL_NOTIFICATION_HOUR;
+
+$log_folder_path = '/var/www/openemr/interface/batchcom/logs'; //LHR this line and the ones below
+
+$GLOBALS['smtp_host_name']  = "localhost";
+$GLOBALS['smtp_host_port']  = "25";
+$GLOBALS['smtp_use_ssl']    = "";
+$GLOBALS['smtp_localhost']  = "localhost";
+$GLOBALS['smtp_auth_user']  = "";
+$GLOBALS['smtp_auth_pass']  = "";
 
 ////////////////////////////////////////////////////////////////////
 // Function:	cron_SendMail
@@ -59,12 +67,12 @@ function cron_SendMail( $to, $subject, $vBody, $from )
 	} else
 	{
 		// larry :: debug
-		//echo "\nDEBUG :: use smtp method\n";	
+		//echo "\nDEBUG :: use smtp method\n";	modified below by LHR
 		
 		if( !class_exists( "smtp_class" ) )
 		{
-			include("../../library/classes/smtp/smtp.php");
-			include("../../library/classes/smtp/sasl.php");
+			include("/var/www/openemr/library/classes/smtp/smtp.php");
+			include("/var/www/openemr/library/classes/smtp/sasl.php");
 		}
 		
 		$strFrom = $from;
@@ -253,7 +261,7 @@ function cron_getAlertpatientData( $type )
 	$patient_field = "pd.pid,pd.title,pd.fname,pd.lname,pd.mname,pd.phone_cell,pd.email,pd.hipaa_allowsms,pd.hipaa_allowemail,";
 	$ssql .= " and (ope.pc_eventDate='$check_date')";
 	// larry :: add condition if remnder was already sent
-	// $ssql .= " and (ope.pc_apptstatus != '*' ) ";
+	// $ssql .= " and (ope.pc_apptstatus != '*' ) "; //below mod by LHR and ope.pc_title != \"09. Vocation Counselor\"
 	
 	$query = "select $patient_field pd.pid,ope.pc_eid,ope.pc_pid,ope.pc_title,
 			ope.pc_hometext,ope.pc_eventDate,ope.pc_endDate,
@@ -261,7 +269,7 @@ function cron_getAlertpatientData( $type )
 		from 
 			openemr_postcalendar_events as ope ,patient_data as pd 
 		where 
-			ope.pc_pid=pd.pid $ssql 
+			ope.pc_pid=pd.pid and ope.pc_title != \"09. Vocation Counselor\" $ssql 
 		order by 
 			ope.pc_eventDate,ope.pc_endDate,pd.pid";
 			
