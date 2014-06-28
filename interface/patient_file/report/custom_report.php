@@ -865,7 +865,7 @@ foreach ($ar as $key => $val) {
                 $prevIssueType = 'asdf1234!@#$'; // random junk so as to not match anything
                 $first_issue = 0;
                 echo "<hr />";
-                echo "<h1>".xl("Issues")."</h1>";
+                echo "<h1>".xl("Claim Number")."</h1>";// LHR changed issues to claim number
             }
             preg_match('/^(.*)_(\d+)$/', $key, $res);
             $rowid = $res[2];

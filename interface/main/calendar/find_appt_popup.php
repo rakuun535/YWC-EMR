@@ -344,9 +344,9 @@ form {
 </head>
 
 <body class="body_top">
-
+<!-- LHR modified action below to fix bug of losing the facility id when changing search days added &facility=<?php echo $facility ?> -->
 <div id="searchCriteria">
-<form method='post' name='theform' action='find_appt_popup.php?providerid=<?php echo $providerid ?>&catid=<?php echo $input_catid ?>'>
+<form method='post' name='theform' action='find_appt_popup.php?providerid=<?php echo $providerid ?>&catid=<?php echo $input_catid ?>&facility=<?php echo $facility ?>'>
    <?php xl('Start date:','e'); ?>
    <input type='text' name='startdate' id='startdate' size='10' value='<?php echo $sdate ?>'
     title='yyyy-mm-dd starting date for search' />

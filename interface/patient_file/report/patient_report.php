@@ -429,7 +429,7 @@ $(document).ready(function(){
     $(".genpdfrep").click(function() { top.restoreSession(); document.report_form.pdf.value = 1; $("#report_form").submit(); });
     $("#genfullreport").click(function() { location.href='<?php echo "$rootdir/patient_file/encounter/$returnurl";?>'; });
     //$("#printform").click(function() { PrintForm(); });
-    $(".issuecheckbox").click(function() { issueClick(this); });
+    // LHR removed to stop autoselection of encounters with issues $(".issuecheckbox").click(function() { issueClick(this); });
 
     // check/uncheck all Forms of an encounter
     $(".encounter").click(function() { SelectForms($(this)); });

@@ -717,6 +717,29 @@ if(is_array($ret))
         "subscriber_lname != '' limit 1", array($iter['enc_pid']) );
       $namecolor = ($res['count'] > 0) ? "black" : "#ff7777";
 
+
+	//below added by LHR  so as to display the claim numbers 1-8-2010
+	$clm1 = sqlQuery("select * from insurance_data where " .
+        "pid = " . $iter['enc_pid'] . " and " .
+        "type='primary' and " .
+        "subscriber_lname is not null and " .
+        "subscriber_lname != '' limit 1");
+
+
+	$clm2 = sqlQuery("select * from insurance_data where " .
+        "pid = " . $iter['enc_pid'] . " and " .
+        "type='secondary' and " .
+        "subscriber_lname is not null and " .
+        "subscriber_lname != '' limit 1");
+
+
+	$clm3 = sqlQuery("select * from insurance_data where " .
+        "pid = " . $iter['enc_pid'] . " and " .
+        "type='tertiary' and " .
+        "subscriber_lname is not null and " .
+        "subscriber_lname != '' limit 1");
+
+
       $bgcolor = "#" . (($encount & 1) ? "ddddff" : "ffdddd");
       echo "<tr bgcolor='$bgcolor'><td colspan='8' height='5'></td></tr>\n";
       $lcount = 1;
@@ -831,6 +854,11 @@ if(is_array($ret))
         $DivPut='yes';
         $lhtml .= "<br>\n&nbsp;<div   id='divid_$divnos' style='display:none'>" . text(oeFormatShortDate(substr($iter['date'], 0, 10)))
           . text(substr($iter['date'], 10, 6)) . " " . xlt("Encounter was coded");
+	  
+	// added by LHR
+	$lhtml .= "<br>\n&nbsp; <strong>Primary:</strong> " . xl($clm1['policy_number'])." \n&nbsp; <strong>Secondary:</strong> ".xl($clm2['policy_number']) ." \n&nbsp; <strong>Tertiary:</strong> ".xl($clm3['policy_number']);
+        $lhtml .= "<br>\n&nbsp;<div   id='divid_$divnos' style='display:none'>" . oeFormatShortDate(substr($iter['date'], 0, 10))
+          . substr($iter['date'], 10, 6) . " " . xl("Encounter was coded");
 
         $query = "SELECT * FROM claims WHERE " .
           "patient_id = ? AND " .

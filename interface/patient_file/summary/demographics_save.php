@@ -58,6 +58,7 @@ newInsuranceData(
   formData("i1provider"),
   formData("i1policy_number"),
   formData("i1group_number"),
+  formData("i1diag_code"),  //LHR added
   formData("i1plan_name"),
   formData("i1subscriber_lname"),
   formData("i1subscriber_mname"),
@@ -93,6 +94,7 @@ newInsuranceData(
   formData("i2provider"),
   formData("i2policy_number"),
   formData("i2group_number"),
+  formData("i2diag_code"),    //LHR Added
   formData("i2plan_name"),
   formData("i2subscriber_lname"),
   formData("i2subscriber_mname"),
@@ -128,6 +130,7 @@ newInsuranceData(
   formData("i3provider"),
   formData("i3policy_number"),
   formData("i3group_number"),
+  formData("i3diag_code"),  //LHR Added
   formData("i3plan_name"),
   formData("i3subscriber_lname"),
   formData("i3subscriber_mname"),

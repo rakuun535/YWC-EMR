@@ -342,7 +342,7 @@ function parse_era($filename, $cb) {
             } else {
                 $svc = explode($delimiter3, $seg[1]);
             }
-            if ($svc[0] != 'HC') return 'SVC segment has unexpected qualifier';
+           // LHR if ($svc[0] != 'HC') return 'SVC segment has unexpected qualifier';
             // TBD: Other qualifiers are possible; see IG pages 140-141.
             $i = count($out['svc']);
             $out['svc'][$i] = array();

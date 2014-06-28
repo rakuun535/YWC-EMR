@@ -96,13 +96,19 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     "*" .
     "*" .
     "*" .
-    "*46";
+    "*46" .
+// added line below LHR
+    "*" . $claim->x12gsgs02() .
+    "~\n";
+
+/* LHR "*46";
    if (trim($claim->x12gsreceiverid()) == '470819582') { // if ECLAIMS EDI
     $out  .=  "*" . $claim->clearingHouseETIN();
    } else {
     $out  .=  "*" . $claim->billingFacilityETIN();
    }
     $out .= "~\n";
+*/
 
   ++$edicount;
   $out .= "PER" .
@@ -155,7 +161,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     "*" .
     "*";
   if ($claim->billingFacilityNPI()) {
-    $out .= "*XX*" . $claim->billingFacilityNPI();
+    // LHR $out .= "*XX*" . $claim->billingFacilityNPI();
+	$out .= "*24*" . $claim->billingFacilityETIN();
   }
   else {
     $log .= "*** Billing facility has no NPI.\n";
@@ -270,8 +277,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
   $out .= "SBR" .       // Subscriber Information
     "*" . $claim->payerSequence() .
     "*" . ($claim->isSelfOfInsured() ? '18' : '') .
-    "*" . $claim->groupNumber() .
-    "*" . (($CMS_5010 && $claim->groupNumber()) ? '' : $claim->groupName()) .
+    "*" . $claim-> policyNumber() .    // Replaced this function groupNumber() . Customized for us LHR
+    "*" . // LHR (($CMS_5010 && $claim->groupNumber()) ? '' : $claim->groupName()) .
     "*" . $claim->insuredTypeCode() . // applies for secondary medicare
     "*" .
     "*" .
@@ -318,6 +325,14 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
       "*" . $claim->insuredDOB() .
       "*" . $claim->insuredSex() .
       "~\n";
+    // added these next lines LHR
+    if ($claim->insuredSS()){
+    ++$edicount;
+   $out .= "REF" .
+    "*SY".
+    "*" . $claim->insuredSS() . 
+    "~\n";
+   }
   }
 
   // Segment REF*SY (Subscriber Secondary Identification) omitted.
@@ -354,8 +369,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
   // if (!$claim->payerID()) {
   //   $log .= "*** CMS ID is missing for payer '" . $claim->payerName() . "'.\n";
   // }
-
-  if (true) { // !$CMS_5010
+// LHR below commented out 
+/*  if (true) { // !$CMS_5010
     // The 5010 spec says:
     // "Required when the payer address is available and the submitter intends
     // for the claim to be printed on paper at the next EDI location (for example, a
@@ -373,7 +388,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
       "*" . stripZipCode($claim->payerZip()) .
       "~\n";
   }
-
+*/
   // Segment REF (Payer Secondary Identification) omitted.
   // Segment REF (Billing Provider Secondary Identification) omitted.
 
@@ -452,9 +467,28 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     "*A" .
     "*"  . ($claim->billingFacilityAssignment() ? 'Y' : 'N') .
     "*Y" .
-    ($CMS_5010 ? "" : "*C") .
+    "*B" . //added this LHR
+    "*EM" . // Added this LHR
+    // LHR ($CMS_5010 ? "" : "*C") .
     "~\n"; 
 
+
+  ++$edicount;
+  $out .= "DTP" .     // Date of Injury (located in form_encounter table under onset_date LHR)
+    "*439" .		// changed to insuredDOI
+    "*D8" .
+    "*" . $claim->insuredDOI() .
+    "~\n";
+
+  if (strcmp($claim->facilityPOS(),'21') == 0) {
+    ++$edicount;
+    $out .= "DTP" .     // Date of Hospitalization (same as above LHR) changed to insuredDOI
+      "*435" .
+      "*D8" .
+      "*" . $claim->insuredDOI() .
+      "~\n";
+  }
+/* LHR 
   if ($claim->onsetDate() && 
       ($claim->onsetDate()!== $claim->serviceDate()) &&
       ($claim->onsetDateValid()) 
@@ -494,7 +528,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
       "*" . $claim->onsetDate() .
       "~\n";
   }
-
+*/  LHR
   // Segment DTP*096 (Discharge Date) omitted.
   // Segments DTP (Assumed and Relinquished Care Dates) omitted.
   // Segment DTP*444 (Property and Casualty Date of First Contact) omitted.
@@ -683,8 +717,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     if ($claim->providerNumber()) {
       ++$edicount;
       $out .= "REF" .
-        "*" . $claim->providerNumberType() .
-        "*" . $claim->providerNumber() .
+        "*" . $claim->renderingproviderNumberType() .  //LHR
+        "*" . $claim->renderingproviderNumber() .      //LHR  
         "~\n";
     }
   }
@@ -771,7 +805,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
 
   // Segments NM1*PW, N3, N4 (Ambulance Pick-Up Location) omitted.
   // Segments NM1*45, N3, N4 (Ambulance Drop-Off Location) omitted.
-
+/* commenting out the two loops below cuz we are not an NPI company LHR
   $prev_pt_resp = $clm_total_charges; // for computation below
 
   // Loops 2320 and 2330*, other subscriber/payer information.
@@ -950,6 +984,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     // Segment REF (Other Payer Billing Provider Secondary Identification) omitted.
 
   } // End loops 2320/2330*.
+LHR Commented the two loops above out cuz we are not an NPI company
+*/
 
   $loopcount = 0;
 

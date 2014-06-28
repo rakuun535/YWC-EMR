@@ -953,6 +953,7 @@ function newInsuranceData(
   $provider = "",
   $policy_number = "",
   $group_number = "",
+  $diag_code = "",           //LHR
   $plan_name = "",
   $subscriber_lname = "",
   $subscriber_mname = "",
@@ -1026,6 +1027,7 @@ function newInsuranceData(
     $data['provider'] = $provider;
     $data['policy_number'] = $policy_number;
     $data['group_number'] = $group_number;
+    $data['diag_code'] = $diag_code;            //LHR
     $data['plan_name'] = $plan_name;
     $data['subscriber_lname'] = $subscriber_lname;
     $data['subscriber_mname'] = $subscriber_mname;

@@ -568,7 +568,27 @@ if ($GLOBALS['patient_id_category_name']) {
 <?php echo htmlspecialchars(xl('Transactions'),ENT_NOQUOTES); ?></a>
 |
 <a href="stats_full.php?active=all" onclick='top.restoreSession()'>
-<?php echo htmlspecialchars(xl('Issues'),ENT_NOQUOTES); ?></a>
+<?php echo htmlspecialchars(xl('Claim Info'),ENT_NOQUOTES); // LHR changed Issues to Claim Number?></a>
+|
+<?php //below link and code by LHR for creating address labels
+
+$LHRres = sqlStatement("SELECT * FROM insurance_data WHERE pid = $pid and type = 'primary'");
+  while($LHRrow = sqlFetchArray($LHRres)){
+						$policy_num = $LHRrow['policy_number'];
+						}
+ echo "<a href=\"labels.php?pid=".urlencode($result['pubpid'])."&fname=".urlencode($result['fname'])."&lname=".urlencode($result['lname'])."&DOB=".urlencode($result['DOB'])."&phone_home=".urlencode($result['phone_home'])."&city=".urlencode($result['city'])."&state=".urlencode($result['state'])."&postal_code=".urlencode($result['postal_code'])."&fs_provider=".urlencode($result['fs_provider'])."&effdate=".urlencode($result3['effdate'])."&fs_allergies=".urlencode($result['fs_allergies'])."&fs_meds=".urlencode($result['fs_meds'])."&policy_number=".urlencode($policy_num)."&sex=".urlencode($result['sex'])."&employer_name=".urlencode($result2['name'])."&employer_phone=".urlencode($result['emplo_phone'])."&employer_fax=".urlencode($result['emplo_fax'])."\" target=\"_blank\" >Labels</a>";  // LHR added this?>
+
+|
+
+<?php //below link and code by LHR for apf
+
+ echo "<a href=\"APF.php?pid=".urlencode($result['pubpid'])."&fname=".urlencode($result['fname'])."&lname=".urlencode($result['lname'])."&DOB=".urlencode($result['DOB'])."&phone_home=".urlencode($result['phone_home'])."&city=".urlencode($result['city'])."&state=".urlencode($result['state'])."&postal_code=".urlencode($result['postal_code'])."&fs_provider=".urlencode($result['fs_provider'])."&effdate=".urlencode($result3['effdate'])."&fs_allergies=".urlencode($result['fs_allergies'])."&fs_meds=".urlencode($result['fs_meds'])."&policy_number=".urlencode($policy_num)."&sex=".urlencode($result['sex'])."&employer_name=".urlencode($result2['name'])."&employer_phone=".urlencode($result['emplo_phone'])."&employer_fax=".urlencode($result['emplo_fax'])."\" target=\"_blank\" >APF</a>";  // LHR added this?>
+
+|
+
+<?php //below link and code by LHR for linked claim folder
+
+ echo "<a href=\"http://192.168.167.17/mydocman/processed/".urlencode($result['pubpid'])."\" target=\"_blank\" >More Docs</a>";  // LHR added this?>
   </td>
  </tr>
 </table> <!-- end header -->
@@ -795,11 +815,8 @@ if ( $insurance_count > 0 ) {
 								  ?>
 								  <br>
 								  <?php echo htmlspecialchars(xl('Policy Number'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['policy_number'],ENT_NOQUOTES) ?><br>
-								  <?php echo htmlspecialchars(xl('Plan Name'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['plan_name'],ENT_NOQUOTES); ?><br>
-								  <?php echo htmlspecialchars(xl('Group Number'),ENT_NOQUOTES); ?>: 
-								  <?php echo htmlspecialchars($row['group_number'],ENT_NOQUOTES); ?></span>
+                                                                  <!--LHR Group/Plan Dropped -->
+								 <br>
 								 </td>
 								 <td valign='top'>
 								  <span class='bold'><?php echo htmlspecialchars(xl('Subscriber'),ENT_NOQUOTES); ?>: </span><br>

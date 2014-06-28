@@ -83,8 +83,11 @@ country => "Country: ");
 $insurance_data_array = array(
 provider_name => "Provider: ",
 plan_name => "Plan Name: ",
-policy_number => "Policy Number: ",
+//LHR modified this one below to say claim number instead of policy number
+policy_number => "Claim Number: ",
+date => "Date of Injury: ", //added this for DOI LHR
 group_number => "Group Number: ",
+diag_code => "Diagnosis Codes: ", //added this LHR for diag codes
 subscriber_fname => "Subscriber First Name: ",
 subscriber_mname => "Subscriber Middle Name: ",
 subscriber_lname => "Subscriber Last Name: ",
@@ -401,10 +404,9 @@ function getRecInsuranceData ($pid, $ins_type) {
 	//$return{"lname"}[0..n]{"date"}
 	//$return{"lname"}[0..n]{"value"}
 	$res = sqlStatement("select *, ic.name as provider_name from insurance_data left join insurance_companies as ic on ic.id = provider where pid=? and type=? order by date", array($pid,$ins_type) );
-	
 	while($result = sqlFetchArray($res)) {
 		foreach ($result as $key => $val) {
-			if ($key == "pid" || $key == "date" || $key == "id") {
+			if ($key == "pid" ||  $key == "id") {   // LHR Drop date key
 				next;
 			} else {
 				$curdate = $result{"date"};

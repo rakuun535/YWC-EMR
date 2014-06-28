@@ -91,7 +91,7 @@ sqlClose();
 
 <html>
 <head>
-<title>Conrjob - Email Notification</title>
+<title>Cronjob - Email Notification</title>
 </head>
 <body>
 	<center>

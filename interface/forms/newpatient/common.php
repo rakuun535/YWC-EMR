@@ -304,9 +304,15 @@ if ($fres) {
         title='<?php echo xla('Click here to choose a date'); ?>'>
      </td>
     </tr>
-
+	<?php 
+	// LHR added for date of injury for auto propagation
+	$doires = sqlStatement("SELECT * FROM insurance_data where type = 'primary' and pid = $pid");
+	while ($LHRrow = sqlFetchArray($doires)){
+	   $doi = $LHRrow[date];
+	}
+	 ?>
     <tr<?php if ($GLOBALS['ippf_specific'] || $GLOBALS['athletic_team']) echo " style='visibility:hidden;'"; ?>>
-     <td class='bold' nowrap><?php echo xlt('Onset/hosp. date:'); ?></td>
+     <td class='bold' nowrap><?php xl('Date of Injury:','e');// Changed to DOI from onset date LHR ?></td>
      <td class='text' nowrap><!-- default is blank so that while generating claim the date is blank. -->
       <input type='text' size='10' name='form_onset_date' id='form_onset_date'
        value='<?php echo $viewmode && $result['onset_date']!='0000-00-00 00:00:00' ? substr($result['onset_date'], 0, 10) : ''; ?>' 

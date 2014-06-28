@@ -580,6 +580,10 @@ if (! $GLOBALS['simplified_demographics']) {
      <td><span class=required><?php xl('Group Number','e'); ?>: </span></td><td><input type=entry size=16 name=i<?php echo $i?>group_number value="<?php echo $result3{"group_number"}?>" onkeyup='policykeyup(this)'></td>
     </tr>
 
+    <tr> <!-- LHR added below-->
+     <td><span class=required><?php xl('Diagnosis Codes','e'); ?>: </span></td><td><input type=entry size=16 name=i<?php echo $i?>group_number value="<?php echo $result3{"diag_code"}?>"title="<?php xl('Ex. 840.9: or 354.0:840.9:','e')?>" onkeyup='policykeyup(this)'></td>
+    </tr>
+
     <tr<?php if ($GLOBALS['omit_employers']) echo " style='display:none'"; ?>>
      <td class='required'><?php xl('Subscriber Employer (SE)','e'); ?><br><span style='font-weight:normal'>
       (<?php xl('if unemployed enter Student','e'); ?>,<br><?php xl('PT Student, or leave blank','e'); ?>): </span></td>

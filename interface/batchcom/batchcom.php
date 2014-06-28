@@ -118,6 +118,8 @@ if ($_POST['form_action']=='Process') {
             break;
         endswitch;
 
+        // add to complete query syntax (LHR?) kept here by TDM 6/26 
+        // $sql.=' GROUP BY patient_data.pid';
         // sort by
         $sql.=' ORDER BY '.$_POST['sort_by'];
         //echo $sql;

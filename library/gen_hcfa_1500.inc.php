@@ -9,8 +9,8 @@
 require_once("Claim.class.php");
 require_once("gen_hfca_1500_02_12.inc.php");
 
-$hcfa_curr_line = 1;
-$hcfa_curr_col = 1;
+$hcfa_curr_line = -5; // LHR changed from 1 to -5 
+$hcfa_curr_col = -5;  // LHR changed from 1 to -5
 $hcfa_data = '';
 $hcfa_proc_index = 0;
 
@@ -181,7 +181,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
   $tmp = $claim->insuredPhone();
   put_hcfa(16, 65,  3, substr($tmp,0,3));
   put_hcfa(16, 69,  7, substr($tmp,3));
-
+/* LHR Box 9 excluded
   // Box 9. Other Insured's Name
   if ($new_medicare_logic) {
     // TBD: Medigap stuff? How do we know if this is a Medigap transfer?
@@ -194,7 +194,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa(18, 1, 28, $tmp);
     }
   }
-
+*/
   // Box 11. Insured's Group Number
   if ($new_medicare_logic) {
     // If this is Medicare secondary then we need the primary's policy number
@@ -206,6 +206,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
   }
   put_hcfa(18, 50, 30, $tmp);
 
+/* LHR Box 9a Excluded
   // Box 9a. Other Insured's Policy or Group Number
   if ($new_medicare_logic) {
     // TBD: Medigap stuff?
@@ -215,9 +216,11 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa(20, 1, 28, $claim->policyNumber(1));
     }
   }
-
+*/
+//modified below to always say yes LHR
   // Box 10a. Employment Related
-  put_hcfa(20, $claim->isRelatedEmployment() ? 35 : 41, 1, 'X');
+    put_hcfa(20, 35, 1, 'X');
+//  put_hcfa(19, $claim->isRelatedEmployment() ? 35 : 41, 1, 'X');
 
   // Box 11a. Insured's Birth Date and Sex
   if ($new_medicare_logic) {
@@ -239,6 +242,8 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
   if ($tmpsex) {
     put_hcfa(20, $tmpsex == 'M' ? 68 : 75, 1, 'X');
   }
+//below modified by LHR
+/*
 
   // Box 9b. Other Insured's Birth Date and Sex
   if(!hcfa_1500_version_02_12())  // Box 9b Reserved for NUCC Use in 02/12  
@@ -256,7 +261,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       }
     }
   }
-    
+*/   
   // Box 10b. Auto Accident
   put_hcfa(22, $claim->isRelatedAuto() ? 35 : 41, 1, 'X');
   if ($claim->isRelatedAuto())
@@ -270,7 +275,8 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     $tmp = $claim->groupName();
   }
   put_hcfa(22, 50, 30, $tmp);
-
+//below commented out by LHR
+/*
   // Box 9c. Other Insured's Employer/School Name
   if(!hcfa_1500_version_02_12())  // Box 9c Reserved for NUCC Use in 02/12
   {
@@ -283,7 +289,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       }
     }
   }
-  
+*/
   // Box 10c. Other Accident
   put_hcfa(24, $claim->isRelatedOther() ? 35 : 41, 1, 'X');
 
@@ -299,7 +305,8 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     $tmp = $claim->planName();
   }
   put_hcfa(24, 50, 30, $tmp);
-
+//below commented out by LHR
+/*
   // Box 9d. Other Insurance Plan Name or Program Name
   if ($new_medicare_logic) {
     // TBD: Medigap stuff?
@@ -309,7 +316,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa(26, 1, 28, $claim->planName(1));
     }
   }
-
+*/
   // Box 11d. Is There Another Health Benefit Plan
   if (!$new_medicare_logic) {
     put_hcfa(26, $claim->payerCount() > 1 ? 52 : 57, 1, 'X');
@@ -317,13 +324,14 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
 
   // Box 12. Patient's or Authorized Person's Signature
   put_hcfa(29, 7, 17, 'Signature on File');
+  put_hcfa(29, 35, 10, date('m/d/Y'));      //LHR 
   // Note: Date does not apply unless the person physically signs the form.
 
   // Box 13. Insured's or Authorized Person's Signature
   put_hcfa(29, 55, 17, 'Signature on File');
 
   // Box 14. Date of Current Illness/Injury/Pregnancy
-  $tmp = $claim->onsetDate();
+  $tmp = $claim->insuredDOI();  //LHR
   put_hcfa(32, 2, 2, substr($tmp,4,2));
   put_hcfa(32, 5, 2, substr($tmp,6,2));
   put_hcfa(32, 8, 4, substr($tmp,0,4));
@@ -500,6 +508,8 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     //Note Codes.
     put_hcfa($lino, 25, 7, $claim->cptNotecodes($hcfa_proc_index));
 
+//below commented and Modifiedout by LHR 5-14-2012
+ /*
     // 24i and 24j Top. ID Qualifier and Rendering Provider ID
     if ($claim->supervisorNumber()) {
       // If there is a supervising provider and that person has a
@@ -514,7 +524,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa($lino, 65,  2, $claim->providerNumberType($hcfa_proc_index));
       put_hcfa($lino, 68, 10, $claim->providerNumber($hcfa_proc_index));
     }
-
+*/
     ++$lino;
 
     // 24a. Date of Service
@@ -561,7 +571,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     // Not currently supported.
 
     // 24j. Rendering Provider NPI
-    put_hcfa($lino, 68, 10, $claim->providerNPI($hcfa_proc_index));
+    // put_hcfa($lino, 68, 10, $claim->providerNPI($hcfa_proc_index));  //LHR
   }
 
   // 25. Federal Tax ID Number

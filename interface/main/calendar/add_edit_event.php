@@ -862,7 +862,18 @@ td { font-size:0.8em; }
    }
   }
   $catoptions .= ">" . text(xl_appt_category($crow['pc_catname'])) . "</option>\n";
- }
+
+/*  TDM might be an LHR, not sure 
+  // This section is to build the list of preferred categories:
+  if ($duration) {
+   $prefcat_options .= "    <option value='" . $crow['pc_catid'] . "'";
+   if ($eid) {
+    if ($crow['pc_catid'] == $row['pc_prefcatid']) $prefcat_options .= " selected";
+   }
+   $prefcat_options .= ">" . xl_appt_category($crow['pc_catname']) . "</option>\n";
+  }
+*/
+}
 ?>
 
 <?php require($GLOBALS['srcdir'] . "/restoreSession.php"); ?>
