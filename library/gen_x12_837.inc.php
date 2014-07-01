@@ -161,8 +161,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     "*" .
     "*";
   if ($claim->billingFacilityNPI()) {
-    // LHR $out .= "*XX*" . $claim->billingFacilityNPI();
-	$out .= "*24*" . $claim->billingFacilityETIN();
+    $out .= "*XX*" . $claim->billingFacilityNPI();
+	// LHR $out .= "*24*" . $claim->billingFacilityETIN();
   }
   else {
     $log .= "*** Billing facility has no NPI.\n";
@@ -467,7 +467,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
     "*A" .
     "*"  . ($claim->billingFacilityAssignment() ? 'Y' : 'N') .
     "*Y" .
-    "*B" . //added this LHR
+    "*P" . //change per payor (by MI2)
     "*EM" . // Added this LHR
     // LHR ($CMS_5010 ? "" : "*C") .
     "~\n"; 
