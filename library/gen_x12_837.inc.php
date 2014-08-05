@@ -528,7 +528,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
       "*" . $claim->onsetDate() .
       "~\n";
   }
-*/  LHR
+  // LHR
   // Segment DTP*096 (Discharge Date) omitted.
   // Segments DTP (Assumed and Relinquished Care Dates) omitted.
   // Segment DTP*444 (Property and Casualty Date of First Contact) omitted.
@@ -537,6 +537,7 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
   // Segment CN1 (Contract Information) omitted.
 
   $patientpaid = $claim->patientPaidAmount();
+
   if ($patientpaid != 0) {
     ++$edicount;
     $out .= "AMT" .     // Patient paid amount. Page 190/220.
