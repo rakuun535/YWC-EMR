@@ -81,7 +81,7 @@ if (preg_match("/^[^\/]/",$web_root)) {
 //  real time per above code. If above is not working, can uncomment and
 //  set manually here:
 //   $webserver_root = "/var/www/openemr";
-//   $web_root =  "/openemr";
+$web_root =  "/openemr";   //Hard coded for Azure
 //
 
 // This is the directory that contains site-specific data.  Change this
