@@ -490,21 +490,9 @@ $group_seq=0; // this gives the DIV blocks unique IDs
 				 }
 				?>
 			   </select>
-
 			  </td>
 			 </tr>
-<!-- LHR - Plan NOT Needed
-			<tr>
-			 <td>
-			  <span class='required'><?php xl('Plan Name','e'); ?> </span>
-			 </td>
-			 <td class='required'>:</td>
-			 <td>
-			  <input type='entry' size='20' name='i<?php echo $i?>plan_name' value="<?php echo $result3{"plan_name"} ?>"
-			   onchange="capitalizeMe(this);" />&nbsp;&nbsp;
-			 </td>
-			</tr>
--->
+                        <!-- LHR - Plan NOT Needed -->
 			<tr>
 			 <td>
 			  <span class='required'><?php xl('Effective Date','e'); ?></span>
@@ -525,14 +513,7 @@ $group_seq=0; // this gives the DIV blocks unique IDs
 			 <td><input type='entry' size='16' name='i<?php echo $i?>policy_number' value="<?php echo $result3{"policy_number"}?>"
 			  onkeyup='policykeyup(this)'></td>
 			</tr>
-<!-- LHR Group Not NEEDED
-			<tr>
-			 <td><span class=required><?php xl('Group Number','e'); ?></span></td>
-			 <td class='required'>:</td>
-			 <td><input type=entry size=16 name=i<?php echo $i?>group_number value="<?php echo $result3{"group_number"}?>" onkeyup='policykeyup(this)'></td>
-			</tr>
-
-->
+<!-- LHR Group Not NEEDED -->
 			<tr<?php if ($GLOBALS['omit_employers']) echo " style='display:none'"; ?>>
 			 <td class='required'><?php xl('Subscriber Employer (SE)','e'); ?><br><span style='font-weight:normal'>
 			  (<?php xl('if unemployed enter Student','e'); ?>,<br><?php xl('PT Student, or leave blank','e'); ?>) </span></td>

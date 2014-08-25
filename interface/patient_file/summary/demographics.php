@@ -588,7 +588,7 @@ $LHRres = sqlStatement("SELECT * FROM insurance_data WHERE pid = $pid and type =
 
 <?php //below link and code by LHR for linked claim folder
 
- echo "<a href=\"http://192.168.167.17/mydocman/processed/".urlencode($result['pubpid'])."\" target=\"_blank\" >More Docs</a>";  // LHR added this?>
+ echo "<a href=\"http://NEED-URL/mydocman/processed/".urlencode($result['pubpid'])."\" target=\"_blank\" >More Docs</a>";  // LHR added this?>
   </td>
  </tr>
 </table> <!-- end header -->
@@ -814,9 +814,9 @@ if ( $insurance_count > 0 ) {
 								  }
 								  ?>
 								  <br>
-								  <?php echo htmlspecialchars(xl('Policy Number'),ENT_NOQUOTES); ?>: 
-                                                                  <!--LHR Group/Plan Dropped -->
-								 <br>
+								  <?php echo htmlspecialchars(xl('Policy Number'),ENT_NOQUOTES); ?>:
+								  <?php echo htmlspecialchars($row['policy_number'],ENT_NOQUOTES); ?><br>
+								  </span>
 								 </td>
 								 <td valign='top'>
 								  <span class='bold'><?php echo htmlspecialchars(xl('Subscriber'),ENT_NOQUOTES); ?>: </span><br>
