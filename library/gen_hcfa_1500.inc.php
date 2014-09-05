@@ -534,6 +534,11 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa($lino, 68, 10, $claim->providerNumber($hcfa_proc_index));
     }
 */
+// ADDED by LHR
+  if ($claim->providerNPI($hcfa_proc_index)) {
+      //put_hcfa($lino, 65,  2, $claim->providerNumberType($hcfa_proc_index));
+      put_hcfa($lino +1, 69, 10, $claim->providerNPI($hcfa_proc_index));
+    }
     ++$lino;
 
     // 24a. Date of Service

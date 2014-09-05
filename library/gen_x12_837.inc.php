@@ -528,6 +528,8 @@ function gen_x12_837($pid, $encounter, &$log, $encounter_claim=false) {
       "*" . $claim->onsetDate() .
       "~\n";
   }
+  */
+
   // LHR
   // Segment DTP*096 (Discharge Date) omitted.
   // Segments DTP (Assumed and Relinquished Care Dates) omitted.
