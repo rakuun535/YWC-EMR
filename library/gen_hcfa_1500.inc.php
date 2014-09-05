@@ -515,7 +515,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     }
 
     //Note Codes.
-    put_hcfa($lino, 25, 7, $claim->cptNotecodes($hcfa_proc_index));
+    //put_hcfa($lino, 25, 7, $claim->cptNotecodes($hcfa_proc_index));  // Removed per Jenet TS:3377
 
 //below commented and Modifiedout by LHR 5-14-2012
  /*
@@ -536,7 +536,6 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
 */
 // ADDED by LHR
   if ($claim->providerNPI($hcfa_proc_index)) {
-      //put_hcfa($lino, 65,  2, $claim->providerNumberType($hcfa_proc_index));
       put_hcfa($lino +1, 69, 10, $claim->providerNPI($hcfa_proc_index));
     }
     ++$lino;
