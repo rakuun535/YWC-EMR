@@ -30,15 +30,15 @@ $hcfa_proc_index = 0;
  */
 function put_hcfa($line, $col, $maxlen, $data,$strip='/[.#]/') {
   global $hcfa_curr_line, $hcfa_curr_col, $hcfa_data;
-  if ($line < $hcfa_curr_line)
-    die("Data item at ($line, $col) precedes current line.");
+//  if ($line < $hcfa_curr_line)
+//    die("Data item at ($line, $col) precedes current line.");  //LHR removed failsafe
   while ($hcfa_curr_line < $line) {
     $hcfa_data .= "\n";
     ++$hcfa_curr_line;
     $hcfa_curr_col = 1;
   }
-  if ($col < $hcfa_curr_col)
-    die("Data item at ($line, $col) precedes current column.");
+//  if ($col < $hcfa_curr_col)
+//    die("Data item at ($line, $col) precedes current column."); //LHR removed failsafe
   while ($hcfa_curr_col < $col) {
     $hcfa_data .= " ";
     ++$hcfa_curr_col;
