@@ -9,8 +9,8 @@
 require_once("Claim.class.php");
 require_once("gen_hfca_1500_02_12.inc.php");
 
-$hcfa_curr_line = -5; // LHR changed from 1 to -5 
-$hcfa_curr_col = -5;  // LHR changed from 1 to -5
+$hcfa_curr_line = 1;
+$hcfa_curr_col = 1;
 $hcfa_data = '';
 $hcfa_proc_index = 0;
 
@@ -30,15 +30,15 @@ $hcfa_proc_index = 0;
  */
 function put_hcfa($line, $col, $maxlen, $data,$strip='/[.#]/') {
   global $hcfa_curr_line, $hcfa_curr_col, $hcfa_data;
-//  if ($line < $hcfa_curr_line)
-//    die("Data item at ($line, $col) precedes current line.");  //LHR removed failsafe
+  if ($line < $hcfa_curr_line)
+    die("Data item at ($line, $col) precedes current line.");
   while ($hcfa_curr_line < $line) {
     $hcfa_data .= "\n";
     ++$hcfa_curr_line;
     $hcfa_curr_col = 1;
   }
-//  if ($col < $hcfa_curr_col)
-//    die("Data item at ($line, $col) precedes current column."); //LHR removed failsafe
+  if ($col < $hcfa_curr_col)
+    die("Data item at ($line, $col) precedes current column.");
   while ($hcfa_curr_col < $col) {
     $hcfa_data .= " ";
     ++$hcfa_curr_col;
@@ -534,12 +534,9 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
       put_hcfa($lino, 68, 10, $claim->providerNumber($hcfa_proc_index));
     }
 */
-// ADDED by LHR
-  if ($claim->providerNPI($hcfa_proc_index)) {
-      put_hcfa($lino +1, 69, 10, $claim->providerNPI($hcfa_proc_index));
-    }
-    ++$lino;
 
+    ++$lino;
+    
     // 24a. Date of Service
     $tmp = $claim->serviceDate();
     put_hcfa($lino, 1, 2, substr($tmp,4,2));
@@ -584,7 +581,7 @@ function gen_hcfa_1500_page($pid, $encounter, &$log, &$claim) {
     // Not currently supported.
 
     // 24j. Rendering Provider NPI
-    // put_hcfa($lino, 68, 10, $claim->providerNPI($hcfa_proc_index));  //LHR
+    put_hcfa($lino, 68, 10, $claim->providerNPI($hcfa_proc_index));  //LHR
   }
 
   // 25. Federal Tax ID Number

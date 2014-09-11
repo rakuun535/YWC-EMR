@@ -758,8 +758,9 @@ if(is_array($ret))
         $result4 = sqlStatement("SELECT fe.encounter,fe.date,openemr_postcalendar_categories.pc_catname FROM form_encounter AS fe ".
             " left join openemr_postcalendar_categories on fe.pc_catid=openemr_postcalendar_categories.pc_catid  WHERE fe.pid = ? order by fe.date desc", array($iter['enc_pid']) );
            if(sqlNumRows($result4)>0)
-            ?>
-            <script language='JavaScript'>
+ ?>
+            
+        <script language='JavaScript'>
             Count=0;
             EncounterDateArray[<?php echo attr($iter['enc_pid']); ?>]=new Array;
             CalendarCategoryArray[<?php echo attr($iter['enc_pid']); ?>]=new Array;
@@ -852,14 +853,14 @@ if(is_array($ret))
         }
         $lhtml .= "</select>";
         $DivPut='yes';
-        $lhtml .= "<br>\n&nbsp;<div   id='divid_$divnos' style='display:none'>" . text(oeFormatShortDate(substr($iter['date'], 0, 10)))
-          . text(substr($iter['date'], 10, 6)) . " " . xlt("Encounter was coded");
+        //$lhtml .= "<br>\n&nbsp;<div   id='divid_$divnos' style='display:none'>" . text(oeFormatShortDate(substr($iter['date'], 0, 10)))
+        //  . text(substr($iter['date'], 10, 6)) . " " . xlt("Encounter was coded");
 	  
 	// added by LHR
 	$lhtml .= "<br>\n&nbsp; <strong>Primary:</strong> " . xl($clm1['policy_number'])." \n&nbsp; <strong>Secondary:</strong> ".xl($clm2['policy_number']) ." \n&nbsp; <strong>Tertiary:</strong> ".xl($clm3['policy_number']);
         $lhtml .= "<br>\n&nbsp;<div   id='divid_$divnos' style='display:none'>" . oeFormatShortDate(substr($iter['date'], 0, 10))
           . substr($iter['date'], 10, 6) . " " . xl("Encounter was coded");
-
+        
         $query = "SELECT * FROM claims WHERE " .
           "patient_id = ? AND " .
           "encounter_id = ? " .
